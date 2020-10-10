@@ -4,9 +4,23 @@ import db from '../database/connection';
 
 export default class UsersController {
   async list(request: Request, response: Response){
-    const users = await db('users');
+    const userId = request.params.id;
 
-    return response.json(users);
+    if(userId){
+      const user = await db('users').where('id', userId);
+
+      return response.json({ data: user[0] });
+    }
+
+    const users = await db('users');
+    const totalUsers = await db('users').count('* as total');
+
+    const { total } = totalUsers[0];
+
+    return response.json({
+      count: total,
+      data: users,
+    });
   }
 
   async create(request: Request, response: Response){

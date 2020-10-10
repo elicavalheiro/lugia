@@ -1,8 +1,11 @@
-import express from 'express';
-const router = express.Router();
+import { Router } from 'express';
+import UsersController from './controllers/UsersController';
 
-router.get('/', (request, response) => {
-  response.send('Hello from Routes');
-})
+const router = Router();
+
+// Controllers
+const users_controller = new UsersController();
+
+router.post('/users', users_controller.create);
 
 export default router;

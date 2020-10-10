@@ -1,8 +1,8 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 router.get('/', (request, response) => {
   response.send('Hello from Routes');
 })
 
-module.exports = router;
+export default router;

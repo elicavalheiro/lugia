@@ -1,4 +1,4 @@
-import { query, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 import db from '../database/connection';
 
@@ -9,7 +9,10 @@ export default class UsersController {
     if(userId){
       const user = await db('users').where('id', userId);
 
-      return response.json({ data: user[0] });
+      return response.json({
+        message: "A conta encontrado com sucesso." ,
+        data: user[0]
+      });
     }
 
     const users = await db('users');
@@ -18,6 +21,7 @@ export default class UsersController {
     const { total } = totalUsers[0];
 
     return response.json({
+      message: 'A listagem de usuários foi realizada com sucesso.',
       count: total,
       data: users,
     });
@@ -43,8 +47,8 @@ export default class UsersController {
     } catch (error) {
       if(error.errno === 19){
         return response.status(401).json({
+          message: 'O login informado já está em uso.',
           error,
-          message: 'O login informado já está em uso.'
         })
       }
 
@@ -65,7 +69,7 @@ export default class UsersController {
     });
 
     return response.json({ 
-      message: 'Informações atualizadas',
+      message: 'As informações do usuário foram atualizadas',
       data: payload
     });
   }
@@ -75,6 +79,6 @@ export default class UsersController {
 
     await db('users').where('id', userId).del();
 
-    return response.json({ message: 'Conta removida.' });
+    return response.json({ message: 'A conta foi removida.' });
   }
 }

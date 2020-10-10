@@ -44,4 +44,12 @@ export default class UsersController {
       data: payload
     });
   }
+
+  async delete( request: Request, response: Response){
+    const userId = request.params.id;
+
+    await db('users').where('id', userId).del();
+
+    return response.json({ message: 'Conta removida.' });
+  }
 }

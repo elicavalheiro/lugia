@@ -24,21 +24,32 @@ export default class UsersController {
   }
 
   async create(request: Request, response: Response){
-    const {
-      name,
-      email,
-      login,
-      password
-    } = request.body;
+    try {
+      const {
+        name,
+        email,
+        login,
+        password
+      } = request.body;
+  
+      await db('users').insert({
+        name,
+        email,
+        login,
+        password
+      });
+  
+      return response.json({ message: 'Usuário criado.' });
+    } catch (error) {
+      if(error.errno === 19){
+        return response.status(401).json({
+          error,
+          message: 'O login informado já está em uso.'
+        })
+      }
 
-    await db('users').insert({
-      name,
-      email,
-      login,
-      password
-    });
-
-    return response.json({ message: 'Usuário criado.' });
+      return response.json(error);
+    }
   }
 
   async update(request: Request, response: Response){

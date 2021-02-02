@@ -2,23 +2,31 @@ import { Request, Response } from 'express';
 
 import db from '../database/connection';
 
+interface User {
+  name?: string;
+  email?: string;
+  login?: string;
+  password?: string;
+  avatar?: string
+};
+
 export default class UsersController {
   async list(request: Request, response: Response){
-    const userId = request.params.id;
+    const userId: string = request.params.id;
 
     if(userId){
-      const user = await db('users').where('id', userId);
+      const user: object[] = await db('users').where('id', userId);
 
       return response.json({
-        message: "A conta encontrado com sucesso." ,
+        message: "Usuário encontrado com sucesso." ,
         data: user[0]
       });
     }
 
-    const users = await db('users');
-    const totalUsers = await db('users').count('* as total');
+    const users: object[]= await db.select('name', 'email').from<User>('users');
+    const totalUsers: object[] = await db('users').count('* as total');
 
-    const { total } = totalUsers[0];
+    const { total }: { total?: number } = totalUsers[0];
 
     return response.json({
       message: 'A listagem de usuários foi realizada com sucesso.',
@@ -34,7 +42,7 @@ export default class UsersController {
         email,
         login,
         password
-      } = request.body;
+      }: User = request.body;
   
       await db('users').insert({
         name,
@@ -44,7 +52,7 @@ export default class UsersController {
       });
   
       return response.json({ message: 'Usuário criado.' });
-    } catch (error) {
+    } catch (error: any) {
       if(error.errno === 19){
         return response.status(401).json({
           message: 'O login informado já está em uso.',
@@ -57,8 +65,8 @@ export default class UsersController {
   }
 
   async update(request: Request, response: Response){
-    const userId = request.params.id;
-    const payload = request.body;
+    const userId: string = request.params.id;
+    const payload: User = request.body;
 
     await db('users').where('id', userId).update({
       name: payload.name,
@@ -75,7 +83,7 @@ export default class UsersController {
   }
 
   async delete( request: Request, response: Response){
-    const userId = request.params.id;
+    const userId: string = request.params.id;
 
     await db('users').where('id', userId).del();
 

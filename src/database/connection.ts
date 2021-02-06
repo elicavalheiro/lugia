@@ -1,10 +1,12 @@
 import knex from 'knex';
-import path from 'path';
+require('dotenv').config();
 
 const db = knex({
-  client: 'sqlite3',
+  client: 'pg',
   connection: {
-    filename: path.resolve(__dirname, 'database.sqlite'),
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    database: process.env.DB_DATABASE
   },
   useNullAsDefault: true,
 });

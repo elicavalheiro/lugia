@@ -1,14 +1,7 @@
-import express from 'express';
-import cors from 'cors';
+require('dotenv').config();
+import app from './app';
 
-import routes from './routes';
-
-const app = express();
-const port: number = 3333;
-
-app.use(cors());
-app.use(express.json());
-app.use(routes);
+const port = process.env.APP_PORT || 3333;
 
 app.listen(port, () => {
   console.log(`--- Server running at port ${port} ---`)

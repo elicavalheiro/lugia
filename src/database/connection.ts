@@ -7,7 +7,7 @@ require('dotenv').config({
 const connection = () => {
   if(process.env.NODE_ENV === 'test'){
     return {
-      filename: path.resolve(__dirname, '__tests__', 'database.sqlite')
+      filename: path.resolve(__dirname, '../../' ,'__tests__', 'database.sqlite')
     }
   }
 

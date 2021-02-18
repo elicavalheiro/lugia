@@ -2,7 +2,10 @@ import { Request, Response } from 'express';
 
 import db from '../database/connection';
 
+import { generateToken } from '../utils/helpers';
+
 interface User {
+  id?: Number;
   name?: string;
   email?: string;
   login?: string;
@@ -43,17 +46,23 @@ export default class UsersController {
         login,
         password
       }: User = request.body;
-  
+
       await db('users').insert({
         name,
         email,
         login,
         password
       });
-  
-      return response.json({ message: 'Usuário criado.' });
+
+      const user: object[] = await db('users').where('email', email);
+
+      return response.json({ 
+        message: 'Usuário criado.',
+        user,
+        token: generateToken({ id: <User>user[0].id })
+      });
     } catch (error: any) {
-      if(error.errno === 19){
+      if(error.code === 23505){
         return response.status(401).json({
           message: 'O login informado já está em uso.',
           error,
